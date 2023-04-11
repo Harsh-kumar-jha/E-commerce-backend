@@ -120,3 +120,14 @@
   color: white;
   padding: 20px 0px;
 }
+
+/* Contact us */
+.contactus {
+  margin: 0;
+  padding: 0;
+  height: 70vh;
+  display: flex;
+  align-items: flex;
+  align-items: center;
+  justify-content: center;
+}
