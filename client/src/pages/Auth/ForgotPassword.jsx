@@ -2,34 +2,27 @@ import React, { useState } from "react";
 import Layout from "../../components/layouts/Layout";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../styles/AuthStyles.css";
-import { useAuth } from "../../context/auth";
 
-const Login = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [auth, setAuth] = useAuth();
+  const [newPassword, setNewPassword] = useState("");
+  const [question, setQuestion] = useState("");
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/login`,
-        { email, password }
+        `${process.env.REACT_APP_API}/api/v1/auth/forgot-password`,
+        { email, newPassword, question }
       );
       if (res.data.success) {
         toast.success(res.data.message);
-        setAuth({
-          ...auth,
-          user: res.data.user,
-          token: res.data.token,
-        });
-        localStorage.setItem("auth", JSON.stringify(res.data));
-        navigate(location.state || "/");
+
+        navigate("/login");
       } else {
         toast.error(res.data.message);
       }
@@ -41,7 +34,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="form-container">
-        <h1 className="title">Login Page</h1>
+        <h1 className="title">Reset Password</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <input
@@ -56,27 +49,28 @@ const Login = () => {
           </div>
           <div className="mb-3">
             <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
               className="form-control"
-              id="exampleInputPassword1"
-              placeholder="Enter Password"
+              id="exampleInputEmail1"
+              placeholder="What is your Fav Animal ?"
               required
             />
           </div>
-
           <div className="mb-3">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => navigate("\forgot-password")}
-            >
-              Forgot Password
-            </button>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="form-control"
+              id="exampleInputPassword1"
+              placeholder="Enter your new Password"
+              required
+            />
           </div>
           <button type="submit" className="btn btn-primary">
-            Log IN
+            Reset Password
           </button>
         </form>
       </div>
@@ -84,4 +78,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

@@ -5,7 +5,7 @@ import colors from "colors";
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { name, email, password, phone, address ,question} = req.body;
 
     // Validation
     if (!name) return res.json({ message: "ERROR,Name is required" });
@@ -13,6 +13,7 @@ export const registerController = async (req, res) => {
     if (!password) return res.json({ message: "ERROR,Password is required" });
     if (!phone) return res.json({ message: "ERROR,Phone number  is required" });
     if (!address) return res.json({ message: "ERROR,address is required" });
+    if (!question) return res.json({ message: "ERROR,Question is required" });
 
     //check user
     const existingUser = await userModel.findOne({ email });
@@ -35,6 +36,7 @@ export const registerController = async (req, res) => {
       password: hashedPassword,
       phone,
       address,
+      question,
     }).save();
 
     res.status(201).json({
@@ -101,6 +103,42 @@ export const loginController = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "There is something wrong with Login",
+      error,
+    });
+  }
+};
+
+// forgot password Controller
+export const forgotPasswordController = async (req, res) => {
+  try {
+    const { email, question, newPassword } = req.body;
+    if (!email) res.status(400).json({ message: "Error,Email is required" });
+    if (!question)
+      res.status(400).json({ message: "Error,question is required" });
+    if (!newPassword)
+      res.status(400).json({ message: "Error,newPassword is required" });
+
+    // check
+    const user = await userModel.findOne({ email, question });
+
+    // validation
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Wrong email or question",
+      });
+    }
+    const hashed = await hashedPassword(newPassword);
+    await userModel.findByIdAndUpdate(user._id, { password: hashed });
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully ",
+    });
+  } catch (error) {
+    console.log("Something is wrong with forgot password controller", error);
+    res.status(500).json({
+      success: false,
+      message: "something went wrong",
       error,
     });
   }

@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    question: {
+      type: string,
+      required,
+    },
     role: {
       type: Number,
       default: 0,
