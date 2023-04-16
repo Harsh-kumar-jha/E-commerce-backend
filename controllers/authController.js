@@ -5,7 +5,7 @@ import colors from "colors";
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address ,question} = req.body;
+    const { name, email, password, phone, address, question } = req.body;
 
     // Validation
     if (!name) return res.json({ message: "ERROR,Name is required" });
@@ -95,6 +95,7 @@ export const loginController = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
+        role: user.role,
       },
       token,
     });
